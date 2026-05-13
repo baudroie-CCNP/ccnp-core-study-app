@@ -6,108 +6,136 @@
     <title>CCNP Simulation Lab - Professional Edition</title>
     <style>
         :root {
-            --bg-dark: #1e1e1e; --card-bg: #2d2d2d; --accent: #007aff;
-            --text-color: #cccccc; --terminal-green: #00ff00; --pass: #28a745; --fail: #dc3545;
+            --bg-main: #f8f9fa; 
+            --card-bg: #ffffff; 
+            --accent: #1a73e8; 
+            --accent-hover: #1557b0;
+            --text-main: #3c4043;
+            --text-muted: #5f6368;
+            --border-color: #dadce0;
+            --pass: #1e8e3e; 
+            --fail: #d93025;
+            --terminal-bg: #111111; 
+            --terminal-text: #4af626; 
         }
-        body, html { margin: 0; padding: 0; height: 100%; background: var(--bg-dark); color: var(--text-color); font-family: 'Segoe UI', sans-serif; overflow: hidden; }
-        .btn { border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; font-size: 0.8rem; font-weight: bold; color: #fff; transition: 0.2s; }
-        .back-btn { background: #444; } .judge-btn { background: var(--accent); } .log-btn { background: #6c757d; }
-        .nav-btn { background: #333; border: 1px solid #555; }
-        .btn:hover { opacity: 0.8; }
+
+        body, html { margin: 0; padding: 0; height: 100%; background: var(--bg-main); color: var(--text-main); font-family: 'Segoe UI', Roboto, sans-serif; overflow: hidden; }
+        
+        .btn { border: none; padding: 10px 18px; border-radius: 6px; cursor: pointer; font-size: 0.85rem; font-weight: 600; transition: 0.2s; box-shadow: 0 1px 2px rgba(0,0,0,0.05); white-space: nowrap; }
+        .back-btn { background: #f1f3f4; color: var(--text-main); border: 1px solid var(--border-color); }
+        .judge-btn { background: var(--accent); color: white; }
+        .judge-btn:hover { background: var(--accent-hover); }
+        .secondary-btn { background: #fff; color: var(--text-main); border: 1px solid var(--border-color); }
+
+        /* ログイン画面 */
+        #login-screen { display: flex; height: 100vh; flex-direction: column; align-items: center; background-color: #e8f0fe; overflow-y: auto; padding: 40px 15px; box-sizing: border-box; }
+        .login-container { width: 100%; max-width: 640px; }
+        .header-banner { background: var(--accent); height: 10px; border-radius: 8px 8px 0 0; }
+        .info-box { background: var(--card-bg); padding: 24px; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .info-title { font-size: 1.8rem; margin: 0 0 10px 0; font-weight: 400; }
+        .notice-section { border-top: 1px solid var(--border-color); padding-top: 15px; margin-top: 10px; text-align: left; }
+        .notice-tag { background: #fce8e6; color: #d93025; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; font-weight: bold; margin-right: 10px; }
+
+        .login-box { text-align: left; }
+        .login-label { display: block; margin-bottom: 8px; font-weight: 500; }
+        .login-input { width: 100%; padding: 12px; margin-bottom: 20px; box-sizing: border-box; border-radius: 4px; border: 1px solid var(--border-color); font-size: 1rem; }
 
         /* 選択画面 */
-        #selection-screen { height: 100vh; overflow-y: auto; padding: 40px 20px; display: flex; flex-direction: column; align-items: center; }
-        .lab-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; width: 100%; max-width: 1000px; margin-top: 30px; }
-        .lab-card { background: var(--card-bg); border: 1px solid #444; border-radius: 12px; padding: 20px; cursor: pointer; transition: 0.3s; }
-        .lab-card:hover { border-color: var(--accent); transform: translateY(-3px); }
+        #selection-screen { display: none; height: 100vh; overflow-y: auto; padding: 0 20px 60px; flex-direction: column; align-items: center; }
+        .lab-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px; width: 100%; max-width: 1000px; margin-top: 40px; }
+        .lab-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 24px; cursor: pointer; transition: 0.3s; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+        .lab-card:hover { transform: translateY(-4px); box-shadow: 0 8px 16px rgba(0,0,0,0.1); border-color: var(--accent); }
 
         /* 演習画面 */
         #lab-screen { display: none; height: 100vh; width: 100vw; flex-direction: column; }
-        .top-nav { background: #111; padding: 10px 20px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #333; }
-        .split-container { display: flex; flex: 1; overflow: hidden; }
-        #left-panel { width: 35%; min-width: 250px; background: #252526; display: flex; flex-direction: column; border-right: 1px solid #111; }
-        #right-panel { flex: 1; background: #000; display: flex; flex-direction: column; overflow: hidden; }
-        .resizer { width: 6px; cursor: col-resize; background: #333; }
+        .top-nav { background: white; padding: 10px 24px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border-color); gap: 10px; flex-wrap: wrap; }
+        .split-container { display: flex; flex: 1; overflow: hidden; height: 100%; }
+        #left-panel { width: 35%; background: #ffffff; display: flex; flex-direction: column; border-right: 1px solid var(--border-color); height: 100%; }
+        #right-panel { flex: 1; display: flex; flex-direction: column; height: 100%; overflow: hidden; background: var(--bg-main); }
         
-        .tab-bar { display: flex; background: #2d2d2d; border-bottom: 1px solid #111; }
-        .tab { padding: 12px 20px; cursor: pointer; font-size: 0.8rem; border-right: 1px solid #111; color: #888; }
-        .tab.active { background: #3d3d3d; color: #fff; border-bottom: 2px solid var(--accent); }
-        .tab-content { flex: 1; padding: 20px; overflow-y: auto; display: none; line-height: 1.6; }
+        /* ターミナル */
+        .terminal-wrapper { flex: 1; display: flex; flex-direction: column; padding: 15px; font-family: 'Consolas', monospace; background-color: var(--terminal-bg); overflow: hidden; border: 1px solid var(--border-color); margin: 15px; border-radius: 4px; box-sizing: border-box; }
+        .history { flex: 1; overflow-y: auto; white-space: pre-wrap; color: var(--terminal-text); font-size: 14px; }
+        .input-line { display: flex; align-items: center; border-top: 1px solid #333; padding-top: 10px; }
+        #cmd-input { background: transparent; border: none; color: var(--terminal-text); font-size: 1rem; outline: none; width: 100%; font-family: inherit; font-weight: bold; }
+
+        .tab-bar { display: flex; background: white; border-bottom: 1px solid var(--border-color); overflow-x: auto; }
+        .tab { padding: 12px 16px; cursor: pointer; font-size: 0.85rem; color: var(--text-muted); font-weight: 600; border-bottom: 3px solid transparent; white-space: nowrap; }
+        .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+        .tab-content { flex: 1; padding: 20px; overflow-y: auto; display: none; line-height: 1.7; }
         .tab-content.active { display: block; }
+        .resizer { width: 4px; cursor: col-resize; background: #eee; }
 
-        /* ターミナルエリア：ここが入力バー固定のキモ */
-        .terminal-wrapper { 
-            flex: 1; 
-            display: flex; 
-            flex-direction: column; 
-            padding: 15px; 
-            font-family: 'Consolas', monospace; 
-            overflow: hidden; /* 親はスクロールさせない */
+        /* スマホ用レイアウト調整 */
+        @media (max-width: 768px) {
+            .split-container { flex-direction: column; }
+            #left-panel { width: 100% !important; height: 40%; border-right: none; border-bottom: 1px solid var(--border-color); }
+            #right-panel { width: 100% !important; height: 60%; }
+            .terminal-wrapper { margin: 10px; }
+            .top-nav { padding: 8px 10px; }
+            .resizer { display: none; }
         }
-        .history { 
-            flex: 1; 
-            overflow-y: auto; /* 出力履歴だけをスクロールさせる */
-            margin-bottom: 0; 
-            white-space: pre-wrap; 
-            color: #fff; 
-            font-size: 14px; 
-            padding-bottom: 10px;
-        }
-        .input-line { 
-            display: flex; 
-            align-items: center; 
-            border-top: 1px solid #333; 
-            padding-top: 10px; 
-            flex-shrink: 0; /* 入力欄が潰れないように固定 */
-            background: #000;
-        }
-        .prompt { color: var(--terminal-green); font-weight: bold; margin-right: 8px; }
-        #cmd-input { background: transparent; border: none; color: var(--terminal-green); font-size: 1rem; outline: none; width: 100%; font-family: inherit; }
-
-        /* 採点表示スタイル */
-        .device-block { margin-bottom: 25px; }
-        .device-header { color: var(--accent); border-bottom: 1px solid #444; padding-bottom: 5px; margin-bottom: 10px; font-weight: bold; font-size: 1.1rem; }
-        .cmd-row { display: flex; align-items: center; padding-left: 10px; margin-bottom: 6px; font-size: 0.9rem; border-bottom: 1px dashed #333; padding-bottom: 4px; }
-        .cmd-text { flex: 1; color: #bbb; }
-        .pass-text { color: var(--pass); font-weight: bold; }
-        .fail-text { color: var(--fail); font-weight: bold; }
-        #loading-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.9); display: flex; justify-content: center; align-items: center; z-index: 100; }
     </style>
 </head>
 <body>
 
-<div id="loading-overlay">Loading Simulation Engine...</div>
+<div id="loading-overlay" style="position:fixed; top:0; left:0; width:100%; height:100%; background:white; display:flex; justify-content:center; align-items:center; z-index:100;">
+    <div id="loading-text" style="color:var(--accent); font-weight:bold; font-size:1.2rem;">Loading System...</div>
+</div>
+
+<div id="login-screen">
+    <div class="login-container">
+        <div class="header-banner"></div>
+        <div class="info-box">
+            <h1 class="info-title">CoreSimulation演習</h1>
+            <p>シミュレーション演習環境へようこそ。</p>
+            <div class="notice-section">
+                <div id="notice-content" style="line-height:1.6;">
+                    読み込み中...
+                </div>
+            </div>
+        </div>
+        <div class="info-box login-box">
+            <label class="login-label">ユーザーID</label>
+            <input type="text" id="login-name" class="login-input" placeholder="あなたの回答">
+            <label class="login-label">パスワード</label>
+            <input type="password" id="login-pass" class="login-input" placeholder="あなたの回答">
+            <button class="btn judge-btn" onclick="attemptLogin()" style="padding: 10px 30px;">ログイン</button>
+            <div id="login-error" style="color:var(--fail); margin-top:15px; font-size:0.9rem;"></div>
+        </div>
+    </div>
+</div>
 
 <div id="selection-screen">
-    <h1>Simulation Lab Selection</h1>
+    <div style="text-align:center; padding: 40px 0;"><h1>演習問題を選択</h1></div>
     <div class="lab-grid" id="lab-list"></div>
 </div>
 
 <div id="lab-screen">
     <div class="top-nav">
-        <div style="display:flex; gap:10px; align-items:center;">
-            <button class="btn back-btn" onclick="exitLab()">← Menu</button>
-            <button class="btn nav-btn" onclick="navLab(-1)">前の問題</button>
-            <button class="btn nav-btn" onclick="navLab(1)">次の問題</button>
-            <span id="active-lab-title" style="margin-left:10px; font-weight:bold;">Lab</span>
+        <div style="display:flex; gap:10px; align-items:center; flex-wrap: wrap;">
+            <button class="btn back-btn" onclick="exitLab()">← 戻る</button>
+            <button class="btn secondary-btn" onclick="navLab(-1)">前の問題</button>
+            <button class="btn secondary-btn" onclick="navLab(1)">次の問題</button>
+            <span id="active-lab-title" style="font-weight:bold; color:var(--accent); margin-left: 10px;">Lab</span>
         </div>
         <div style="display:flex; gap:10px;">
-            <button class="btn log-btn" onclick="downloadLog()">ログ出力</button>
-            <button class="btn judge-btn" onclick="confirmJudge()">採点</button>
+            <button class="btn secondary-btn" onclick="downloadLog()">ログ出力</button>
+            <button class="btn judge-btn" onclick="confirmJudge()">採点実行</button>
         </div>
     </div>
     <div class="split-container">
         <div id="left-panel">
             <div class="tab-bar">
-                <div class="tab active" onclick="switchLeftTab(0)">問題文</div>
+                <div class="tab active" onclick="switchLeftTab(0)">問題</div>
                 <div class="tab" onclick="switchLeftTab(1)">構成図</div>
                 <div class="tab" onclick="switchLeftTab(2)">タスク</div>
-                <div class="tab" onclick="switchLeftTab(3)">結果</div>
+                <div class="tab" onclick="switchLeftTab(3)">採点結果</div>
             </div>
             <div id="l-cnt-0" class="tab-content active"></div>
             <div id="l-cnt-1" class="tab-content" style="text-align:center;"><img id="sim-diagram" src="" style="max-width:100%;"></div>
             <div id="l-cnt-2" class="tab-content"></div>
-            <div id="l-cnt-3" class="tab-content"><div id="judgement-display">採点ボタンを押すと結果が表示されます。</div></div>
+            <div id="l-cnt-3" class="tab-content"><div id="judgement-display"></div></div>
         </div>
         <div class="resizer" id="dragMe"></div>
         <div id="right-panel">
@@ -116,7 +144,7 @@
                 <div id="terminal-history" class="history"></div>
                 <div class="input-line">
                     <span id="current-prompt" class="prompt">R1></span>
-                    <input type="text" id="cmd-input" autofocus autocomplete="off" spellcheck="false">
+                    <input type="text" id="cmd-input" autofocus autocomplete="off" spellcheck="false" autocapitalize="off">
                 </div>
             </div>
         </div>
@@ -124,71 +152,74 @@
 </div>
 
 <script>
-    const GAS_URL = "https://script.google.com/macros/s/AKfycbyzslzjHqkvcgE0Qevp9Tk5srY8xwwezSMFhccj0PzsI-y29Vs9ZQZiy5EQX0K3_gZz/exec"; // ★書き換え必須
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbxf11krMrr5Q5azXXPcAeIt6loAaSdj1yIayw4caaJWgQmLLHsOp5OmnEwp9nS3stQr-g/exec"; // ★GASのデプロイURLをここに貼る
 
     let labs = [], commandDict = [], currentLab = null, deviceState = {}, activeId = '';
+    let currentUser = null; // ログインユーザー情報を保持する変数
 
     window.onload = async () => {
-        history.replaceState({page: "menu"}, "");
         try {
-            const [r1, r2] = await Promise.all([ 
-                fetch(GAS_URL + "?type=simList"), 
-                fetch(GAS_URL + "?type=cmdDict") 
-            ]);
-            labs = await r1.json(); 
-            commandDict = await r2.json();
-            document.getElementById('loading-overlay').style.display = 'none';
-            renderSelectionScreen();
-        } catch (e) { 
-            document.getElementById('loading-overlay').innerText = "Fetch Error. GAS URLを確認してください。"; 
+            const res = await fetch(`${GAS_URL}?type=notice`);
+            const data = await res.json();
+            document.getElementById('notice-content').innerHTML = data.content;
+        } catch(e) {
+            document.getElementById('notice-content').innerText = "お知らせの取得に失敗しました。URLを確認してください。";
         }
+        document.getElementById('loading-overlay').style.display = 'none';
+        document.getElementById('login-pass').addEventListener('keypress', (e) => { if (e.key === 'Enter') attemptLogin(); });
     };
 
-    // ブラウザの戻るボタン対策
-    window.onpopstate = (event) => {
-        if (document.getElementById('lab-screen').style.display === 'flex') {
-            if (confirm("Menuに戻りますか？現在の作業内容は消去されます。")) {
-                exitLab();
-            } else {
-                history.pushState({page: "lab"}, "");
+    async function attemptLogin() {
+        const name = document.getElementById('login-name').value;
+        const pass = document.getElementById('login-pass').value;
+        if (!name || !pass) { document.getElementById('login-error').innerText = "未入力の項目があります"; return; }
+
+        document.getElementById('loading-overlay').style.display = 'flex';
+        try {
+            const res = await fetch(`${GAS_URL}?type=login&name=${encodeURIComponent(name)}&pass=${encodeURIComponent(pass)}`);
+            const data = await res.json();
+            if (!data.success) {
+                document.getElementById('loading-overlay').style.display = 'none';
+                document.getElementById('login-error').innerText = data.error;
+                return;
             }
-        }
-    };
+            
+            currentUser = data; // ★ログイン成功時にユーザー情報を保存
+
+            const [r1, r2] = await Promise.all([fetch(GAS_URL+"?type=simList"), fetch(GAS_URL+"?type=cmdDict")]);
+            labs = await r1.json(); commandDict = await r2.json();
+            document.getElementById('loading-overlay').style.display = 'none';
+            document.getElementById('login-screen').style.display = 'none';
+            document.getElementById('selection-screen').style.display = 'flex';
+            renderSelectionScreen();
+        } catch (e) { alert("通信エラー"); document.getElementById('loading-overlay').style.display = 'none'; }
+    }
 
     function renderSelectionScreen() {
         const list = document.getElementById('lab-list'); list.innerHTML = '';
         labs.forEach(lab => {
             const card = document.createElement('div'); card.className = 'lab-card';
             card.onclick = () => startLab(lab);
-            card.innerHTML = `<span style="color:var(--accent);font-size:0.8rem;">Sim ${lab.id}</span><div style="font-weight:bold;margin-top:5px;">${lab.title}</div>`;
+            card.innerHTML = `<span style="color:var(--accent);font-size:0.8rem;font-weight:bold;">演習 ${lab.id}</span><h3>${lab.title}</h3>`;
             list.appendChild(card);
         });
     }
 
     function startLab(lab) {
         currentLab = lab;
-        history.pushState({page: "lab"}, "");
         document.getElementById('selection-screen').style.display = 'none';
         document.getElementById('lab-screen').style.display = 'flex';
         document.getElementById('active-lab-title').innerText = lab.title;
-        document.getElementById('l-cnt-0').innerHTML = `<h3>概要</h3><p>${(lab.desc||"").replace(/\n/g,'<br>')}</p>`;
-        document.getElementById('l-cnt-2').innerHTML = `<h3>Tasks</h3><p>${(lab.task||"").replace(/\n/g,'<br>')}</p>`;
+        document.getElementById('l-cnt-0').innerHTML = `<h3>概要</h3><p>${lab.desc.replace(/\n/g,'<br>')}</p>`;
+        document.getElementById('l-cnt-2').innerHTML = `<h3>タスク</h3><p>${lab.task.replace(/\n/g,'<br>')}</p>`;
         document.getElementById('sim-diagram').src = `simulation/sim${lab.id}.png`;
-        document.getElementById('judgement-display').innerText = "採点ボタンを押すと結果が表示されます。";
-
+        
         const tabsEl = document.getElementById('device-tabs'); tabsEl.innerHTML = '';
         deviceState = {};
         lab.devices.forEach((dev, idx) => {
             const name = dev.trim();
-            deviceState[name] = { 
-                history: `${name} Console ---\n`, 
-                prompt: `${name}>`, 
-                configBody: lab.initialConfigs[name]||"!", 
-                currentPath: [], 
-                currentInput: "" 
-            };
-            const t = document.createElement('div');
-            t.className = "tab " + (idx === 0 ? "active" : "");
+            deviceState[name] = { history: `${name} Console 接続...\n`, prompt: `${name}>`, configBody: lab.initialConfigs[name] || "!", currentPath: [], cmdHistory: [], historyIndex: -1, typedCommands: [] };
+            const t = document.createElement('div'); t.className = "tab " + (idx === 0 ? "active" : "");
             t.innerText = name; t.onclick = () => switchDevice(name);
             tabsEl.appendChild(t);
         });
@@ -196,210 +227,260 @@
     }
 
     function navLab(direction) {
-        const currentIndex = labs.findIndex(l => l.id === currentLab.id);
-        const nextIndex = currentIndex + direction;
-        if (nextIndex >= 0 && nextIndex < labs.length) {
-            if (confirm("別の問題に移動しますか？現在の履歴は失われます。")) startLab(labs[nextIndex]);
-        } else alert("これ以上問題はありません。");
+        const idx = labs.findIndex(l => l.id === currentLab.id);
+        const next = labs[idx + direction];
+        if (next) { if(confirm("別の問題へ移動しますか？")) startLab(next); }
+        else alert("これ以上問題はありません。");
     }
 
-    function checkPingStatus(pingInput) {
-        if (!currentLab || !currentLab.answers) return false;
-        const allAnswers = currentLab.answers.split(',').map(s => s.trim());
-        const configCriteria = allAnswers.filter(item => !item.split(':')[1].toLowerCase().startsWith("ping"));
-        let configScore = 0;
-        configCriteria.forEach(jItem => {
-            const [dev, jCmd] = jItem.split(':');
-            if (deviceState[dev]?.history.toLowerCase().includes(jCmd.toLowerCase())) configScore++;
-        });
-        const isConfigComplete = configScore === configCriteria.length;
-        const isTargetCorrect = allAnswers.some(ans => ans.toLowerCase().includes(pingInput.toLowerCase()));
-        return isConfigComplete && isTargetCorrect;
+    function downloadLog() {
+        let log = `CCNP Lab Log - ${currentLab.title}\n`;
+        for(let d in deviceState) log += `\n[${d}]\n${deviceState[d].history}`;
+        const b = new Blob([log], {type:'text/plain'});
+        const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = `Log_Lab${currentLab.id}.txt`; a.click();
+    }
+
+    // 採点実行
+    function runJudge() {
+        if (!currentLab) return;
+        const displayAnswers = currentLab.displayAnswers; 
+        let score = 0, total = 0;
+        let html = `<div style="background:#f8f9fa; padding:15px; border-radius:8px; margin-bottom:20px; text-align:center;">`;
+
+        if (displayAnswers && typeof displayAnswers === 'object') {
+            for (const dev in displayAnswers) {
+                html += `<div style="font-weight:bold; color:var(--accent); margin-top:15px;">■ ${dev}</div>`;
+                
+                const currentLines = (deviceState[dev]?.configBody || "").split('\n').map(l => l.trim().toLowerCase().replace(/\s+/g, ' '));
+                const initialLines = (currentLab.initialConfigs[dev] || "").split('\n').map(l => l.trim().toLowerCase().replace(/\s+/g, ' '));
+                const typed = deviceState[dev].typedCommands || [];
+
+                displayAnswers[dev].forEach(ansCmd => {
+                    total++;
+                    const target = ansCmd.trim().toLowerCase().replace(/\s+/g, ' ');
+                    let isOk = false;
+
+                    const isNonConfig = ["no ", "ping ", "copy ", "clear ", "write ", "wr "].some(prefix => target.startsWith(prefix)) || target === "wr";
+
+                    if (isNonConfig) {
+                        if (typed.includes(target)) isOk = true;
+                    } else {
+                        const inConfig = currentLines.includes(target);
+                        const inInitial = initialLines.includes(target);
+                        const isTyped = typed.includes(target);
+
+                        if (inConfig) {
+                            if (!inInitial) {
+                                isOk = true; 
+                            } else {
+                                if (isTyped) isOk = true; 
+                            }
+                        }
+                    }
+
+                    if (isOk) score++;
+                    html += `<div style="font-size:0.9rem; padding:4px 10px; border-bottom:1px dashed #ddd; display:flex; justify-content:space-between;">
+                                <span>└ ${ansCmd}</span>
+                                <span style="color:${isOk?'var(--pass)':'var(--fail)'}; font-weight:bold;">${isOk?'○':'×'}</span>
+                             </div>`;
+                });
+            }
+        }
+        const scoreHtml = `<div style="font-size:1.5rem; font-weight:bold;">SCORE: ${score} / ${total}</div></div>`;
+        document.getElementById('judgement-display').innerHTML = scoreHtml + html + (currentLab.comment ? `<div style="margin-top:20px; color:var(--text-muted); font-size:0.85rem;">解説: ${currentLab.comment}</div>` : "");
+
+        // ★採点完了時にログ送信処理を呼び出す
+        sendStudyLog(score, total);
+    }
+
+    // ★ログ送信処理
+    async function sendStudyLog(score, total) {
+        if (!currentUser) return; // ログインしていなければ送信しない
+        try {
+            // encodeURIComponent を使ってURLに安全な形式に変換して送信
+            const url = `${GAS_URL}?type=saveLog&company=${encodeURIComponent(currentUser.company)}&userName=${encodeURIComponent(currentUser.name)}&labId=${encodeURIComponent(currentLab.id)}&labTitle=${encodeURIComponent(currentLab.title)}&score=${score}&total=${total}`;
+            fetch(url).catch(e => console.log("ログ送信エラー:", e));
+        } catch (e) {
+            console.error("ログ送信処理中にエラーが発生しました:", e);
+        }
+    }
+
+    function reconstructCommand(dictPattern, userWords) {
+        const dictWords = dictPattern.split(/\s+/);
+        let result = [];
+        for (let i = 0; i < dictWords.length; i++) {
+            if (dictWords[i].startsWith("{")) {
+                let val = userWords[i];
+                if (val) {
+                    val = val.replace(/^(g|gi|gig)(?=\d|\/)/i, "GigabitEthernet");
+                    val = val.replace(/^(f|fa|fas)(?=\d|\/)/i, "FastEthernet");
+                    val = val.replace(/^(s|se|ser)(?=\d|\/)/i, "Serial");
+                    val = val.replace(/^(te|ten|tengig)(?=\d|\/)/i, "TenGigabitEthernet");
+                    result.push(val);
+                }
+            } else { result.push(dictWords[i]); }
+        }
+        return result.join(" ");
     }
 
     function handleCommand(input, dev) {
-        const inputWords = input.trim().split(/\s+/);
-        const lowInput = input.toLowerCase();
-        if (inputWords[0] === "") return false;
+        const words = input.trim().split(/\s+/);
+        const low = input.toLowerCase();
+        if (words[0] === "") return false;
 
-        if (lowInput === "sh run" || lowInput === "show run" || lowInput === "show running-config") {
-            dev.history += "Building configuration...\n\n" + dev.configBody + "\n";
-            return true;
+        if (low === "sh run" || low === "show run" || low.startsWith("show run")) { 
+            dev.typedCommands.push("show running-config");
+            dev.history += "Building config...\n\n" + dev.configBody + "\n"; 
+            return true; 
         }
-
-        if (lowInput.startsWith("ping")) {
-            const targetIp = inputWords[1] || "unknown";
+        if (low === "end") { 
+            dev.typedCommands.push("end");
+            dev.currentPath = []; dev.prompt = activeId + "#"; 
+            return true; 
+        }
+        if (low.startsWith("ping")) { 
+            dev.typedCommands.push(low.replace(/\s+/g, ' '));
+            const targetIp = words[1] || "unknown";
             dev.history += `Type escape sequence to abort.\nSending 5, 100-byte ICMP Echos to ${targetIp}, timeout is 2 seconds:\n`;
             setTimeout(() => {
-                const success = checkPingStatus(lowInput);
-                dev.history += success ? "!!!!!" : ".....";
-                dev.history += `\nSuccess rate is ${success ? "100" : "0"} percent.\n${dev.prompt}`;
+                dev.history += "!!!!!\nSuccess rate is 100 percent.\n" + dev.prompt;
                 renderTerminal();
             }, 600);
             return true;
         }
 
-        if (lowInput === "end") {
-            dev.currentPath = [];
-            dev.prompt = activeId + "#";
-            return true;
+        let isNo = false; let checkWords = words; let checkText = input.trim();
+        if (low.startsWith("no ")) { isNo = true; checkWords = words.slice(1); checkText = input.substring(3).trim(); }
+        
+        let matches = [];
+        for (let cmd of commandDict) {
+            const cw = cmd.pattern.split(/\s+/);
+            if (cw.length !== checkWords.length && !cmd.pattern.includes("{")) continue;
+            let match = true;
+            for (let i = 0; i < cw.length; i++) {
+                if (cw[i].startsWith("{")) continue;
+                if (!cw[i].toLowerCase().startsWith((checkWords[i] || "").toLowerCase())) { match = false; break; }
+            }
+            if (match) matches.push(cmd);
         }
 
-        for (let cmd of commandDict) {
-            const cmdWords = cmd.pattern.split(/\s+/);
-            const isCorrectPrompt = (cmd.prompt.toLowerCase() === "any" || dev.prompt.includes(cmd.prompt));
-            if (!isCorrectPrompt) continue;
+        if (matches.length > 1) { dev.history += `% Ambiguous command\n`; return true; }
+        if (matches.length === 1) {
+            const target = matches[0];
+            const reconstructed = reconstructCommand(target.pattern, checkWords);
+            
+            const normalizedCmd = (isNo ? "no " : "") + reconstructed;
+            dev.typedCommands.push(normalizedCmd.toLowerCase().replace(/\s+/g, ' '));
 
-            let isMatch = true;
-            if (cmdWords.length !== inputWords.length && !cmd.pattern.includes("{")) continue;
-
-            for (let i = 0; i < cmdWords.length; i++) {
-                const cw = cmdWords[i].toLowerCase(); const iw = (inputWords[i] || "").toLowerCase();
-                if (cw.startsWith("{")) continue; 
-                if (iw.length >= 2 && cw.startsWith(iw)) continue; 
-                if (cw === iw) continue;
-                isMatch = false; break;
-            }
-
-            if (isMatch) {
-                if (input.length < 5 && input !== cmd.pattern && cmd.type !== "モード切替") continue;
-                if (cmd.type === "表示") dev.history += (cmd.output || "") + "\n";
-                else if (cmd.type === "モード切替") {
-                    dev.currentPath.push(input);
-                    let sfx = "config"; const low0 = inputWords[0].toLowerCase();
-                    if (low0.startsWith("int")) sfx = "config-if";
-                    else if (low0.startsWith("rou")) sfx = "config-router";
-                    else if (low0.startsWith("pol")) sfx = "config-pmap";
-                    else if (low0.startsWith("cla")) sfx = "config-pmap-c";
-                    else if (low0.startsWith("vla")) sfx = "config-vlan";
+            if (target.type === "表示") { dev.history += (target.output || "") + "\n"; }
+            else if (target.type === "モード切替") {
+                if (isNo) { dev.history += "% Incomplete command.\n"; } 
+                else {
+                    dev.currentPath.push(reconstructed);
+                    let sfx = "config"; 
+                    if (checkWords[0].toLowerCase().startsWith("int")) sfx = "config-if";
+                    else if (checkWords[0].toLowerCase().startsWith("rou")) sfx = "config-router";
+                    else if (checkWords[0].toLowerCase().startsWith("vla")) sfx = "config-vlan";
+                    else if (checkWords[0].toLowerCase().startsWith("line")) sfx = "config-line";
                     dev.prompt = activeId + "(" + sfx + ")#";
-                } else if (cmd.type === "設定") {
-                    const indent = " ".repeat(dev.currentPath.length + 1);
-                    if (inputWords[0].toLowerCase() === "no") updateConfig(dev, dev.currentPath, cmdWords[1], "");
-                    else updateConfig(dev, dev.currentPath, cmdWords[0], indent + input);
                 }
-                return true;
+            } else {
+                const indent = " ".repeat(dev.currentPath.length + 1);
+                const reconWords = reconstructed.split(" ");
+                let keyword = reconWords[0];
+                if (reconWords.length > 1 && ["ip", "ipv6", "spanning-tree", "switchport", "vrrp", "standby", "channel-group", "clock", "snmp-server"].includes(keyword.toLowerCase())) keyword = reconWords[0] + " " + reconWords[1];
+                updateConfig(dev, dev.currentPath, keyword, isNo ? "" : indent + reconstructed);
             }
+            return true;
         }
         return false;
     }
 
-    function updateConfig(dev, path, keyword, newLine) {
+    function updateConfig(dev, path, key, line) {
         const parent = path.length > 0 ? path[path.length - 1] : "";
+        const reg = new RegExp("^\\s*" + key + ".*", "mi");
         if (!parent) {
-            const reg = new RegExp("^" + keyword + ".*", "m");
-            if (reg.test(dev.configBody)) dev.configBody = (newLine==="") ? dev.configBody.replace(reg, "").trim() : dev.configBody.replace(reg, newLine);
-            else dev.configBody += "\n" + newLine;
+            if (reg.test(dev.configBody)) dev.configBody = line === "" ? dev.configBody.replace(reg, "").trim() : dev.configBody.replace(reg, line);
+            else if (line !== "") dev.configBody += "\n" + line;
         } else {
-            const sReg = new RegExp("(" + parent + "[\\s\\S]*?)(^!|(?=^\\w))", "m");
+            const sReg = new RegExp("(" + parent + "[\\s\\S]*?)(^!|(?=^\\w))", "mi");
             if (sReg.test(dev.configBody)) {
                 dev.configBody = dev.configBody.replace(sReg, (m, c, f) => {
-                    const lReg = new RegExp("^\\s*" + keyword + ".*", "m");
-                    if (lReg.test(c)) return (newLine==="") ? c.replace(lReg, "").trimEnd() + "\n" + f : c.replace(lReg, newLine) + f;
-                    else return c.trimEnd() + "\n" + newLine + "\n" + f;
+                    if (reg.test(c)) return line === "" ? c.replace(reg, "").trimEnd() + "\n" + f : c.replace(reg, line) + f;
+                    else return line !== "" ? c.trimEnd() + "\n" + line + "\n" + f : c + f;
                 });
-            } else {
-                dev.configBody = dev.configBody.trimEnd() + "\n" + path.join("\n ") + "\n " + newLine + "\n!\n";
+            } else if (line !== "") {
+                dev.configBody = dev.configBody.trimEnd() + "\n" + path.join("\n ") + "\n " + line + "\n!\n";
             }
         }
-    }
-
-    function runJudge() {
-        if (!currentLab || !currentLab.answers) return;
-        const judgeList = currentLab.answers.split(',').map(s => s.trim());
-        const displayList = currentLab.displayAnswers ? currentLab.displayAnswers.split(',').map(s => s.trim()) : judgeList;
-        let score = 0, totalCriteria = 0, deviceData = {}; 
-
-        judgeList.forEach((jItem, idx) => {
-            const dItem = displayList[idx];
-            if (jItem.startsWith("[")) return; 
-            const [dev, jCmd] = jItem.split(':');
-            const [__, dCmd] = dItem.split(':');
-            totalCriteria++;
-            const ok = deviceState[dev]?.history.toLowerCase().includes(jCmd.toLowerCase());
-            if (ok) score++;
-            if (!deviceData[dev]) deviceData[dev] = [];
-            deviceData[dev].push({ text: dCmd || jCmd, ok: ok });
-        });
-
-        let html = `<div style="background: #333; padding: 15px; border-radius: 8px; text-align: center; margin-bottom: 25px;">
-                   <div style="font-size: 0.8rem; color: #888;">TOTAL SCORE</div>
-                   <div style="font-size: 1.8rem; font-weight: bold;">${score} / ${totalCriteria}</div></div><h3>採点詳細</h3>`;
-
-        for (let dev in deviceData) {
-            html += `<div class="device-block"><div class="device-header">■ ${dev}</div>`;
-            deviceData[dev].forEach(cmd => {
-                html += `<div class="cmd-row"><span class="cmd-text">${cmd.text}</span>
-                        <span class="${cmd.ok ? 'pass-text' : 'fail-text'}" style="width:30px; text-align:right;">${cmd.ok ? '○' : '×'}</span></div>`;
-            });
-            html += '</div>';
-        }
-        if (currentLab.comment) html += `<div style="margin-top:20px; padding:15px; background: rgba(255,255,255,0.05); border-left:4px solid var(--accent); font-size: 0.9rem;">
-                                      <b style="color:var(--accent);">Tips:</b><br>${currentLab.comment.replace(/\n/g, '<br>')}</div>`;
-        document.getElementById('judgement-display').innerHTML = html;
     }
 
     document.getElementById('cmd-input').addEventListener('keydown', e => {
+        const dev = deviceState[activeId];
         if (e.key === 'Enter') {
-            const val = e.target.value.trim(), low = val.toLowerCase(), dev = deviceState[activeId];
-            if (val === "") dev.history += dev.prompt + "\n";
-            else {
-                dev.history += dev.prompt + " " + val + "\n";
-                if (low === "en" || low === "enable") dev.prompt = activeId + "#";
-                else if (low === "conf t" || low === "configure terminal") { dev.prompt = activeId + "(config)#"; dev.currentPath = []; }
+            const val = e.target.value.trim();
+            dev.history += dev.prompt + " " + val + "\n";
+            if (val !== "") {
+                dev.cmdHistory.push(val); dev.historyIndex = dev.cmdHistory.length;
+                const low = val.toLowerCase().replace(/\s+/g, ' ');
+                
+                if (low === "en" || low === "enable") { 
+                    dev.typedCommands.push("enable");
+                    dev.prompt = activeId + "#"; 
+                }
+                else if (low === "conf t" || low.startsWith("conf t")) { 
+                    dev.typedCommands.push("configure terminal");
+                    dev.prompt = activeId + "(config)#"; dev.currentPath = []; 
+                }
                 else if (low === "exit") {
-                    if (dev.currentPath.length > 0) { dev.currentPath.pop(); dev.prompt = activeId + (dev.currentPath.length > 0 ? "(config-pmap)#" : "(config)#"); }
-                    else dev.prompt = dev.prompt.includes("(config)") ? activeId + "#" : activeId + ">";
-                } else { if (!handleCommand(val, dev)) dev.history += "% Unknown command.\n"; }
+                    dev.typedCommands.push("exit");
+                    if (dev.currentPath.length > 0) { dev.currentPath.pop(); dev.prompt = activeId + (dev.currentPath.length>0?"(config-if)#":"(config)#"); }
+                    else dev.prompt = activeId + ">";
+                } else if (!handleCommand(val, dev)) { dev.history += "% Unknown command.\n"; }
             }
             e.target.value = ""; renderTerminal();
+        } else if (e.key === 'ArrowUp') {
+            if (dev.historyIndex > 0) { dev.historyIndex--; e.target.value = dev.cmdHistory[dev.historyIndex]; }
+            e.preventDefault();
+        } else if (e.key === 'ArrowDown') {
+            if (dev.historyIndex < dev.cmdHistory.length - 1) { dev.historyIndex++; e.target.value = dev.cmdHistory[dev.historyIndex]; }
+            else { dev.historyIndex = dev.cmdHistory.length; e.target.value = ""; }
+            e.preventDefault();
         }
     });
 
-    function switchDevice(id) { 
-        if(activeId) deviceState[activeId].currentInput = document.getElementById('cmd-input').value; 
-        activeId = id; 
-        document.querySelectorAll('#device-tabs .tab').forEach(t => {
-            t.classList.toggle('active', t.innerText === id);
-        });
-        renderTerminal(); 
+    function switchDevice(id) {
+        if (activeId) deviceState[activeId].currentInput = document.getElementById('cmd-input').value;
+        activeId = id;
+        document.querySelectorAll('#device-tabs .tab').forEach(t => t.classList.toggle('active', t.innerText === id));
+        renderTerminal();
     }
 
     function renderTerminal() {
         const dev = deviceState[activeId];
-        const historyEl = document.getElementById('terminal-history');
-        historyEl.innerText = dev.history;
+        const his = document.getElementById('terminal-history');
+        his.innerText = dev.history;
         document.getElementById('current-prompt').innerText = dev.prompt;
         document.getElementById('cmd-input').value = dev.currentInput || "";
-        
-        // 出力更新時に最下部へスクロール
-        setTimeout(() => {
-            historyEl.scrollTop = historyEl.scrollHeight;
-        }, 0);
-
+        setTimeout(() => his.scrollTop = his.scrollHeight, 0);
         document.getElementById('cmd-input').focus();
     }
 
-    function switchLeftTab(idx) {
-        document.querySelectorAll('#left-panel .tab').forEach((t, i) => t.classList.toggle('active', i === idx));
-        document.querySelectorAll('#left-panel .tab-content').forEach((c, i) => c.classList.toggle('active', i === idx));
+    function switchLeftTab(i) {
+        document.querySelectorAll('#left-panel .tab').forEach((t, j) => t.classList.toggle('active', i === j));
+        document.querySelectorAll('#left-panel .tab-content').forEach((c, j) => c.classList.toggle('active', i === j));
     }
-    function confirmJudge() { if(confirm("採点を実施しますか？")) { switchLeftTab(3); runJudge(); } }
-    function downloadLog() {
-        if(!confirm("ログを出力しますか？")) return;
-        let log = `CCNP Lab Log - ${currentLab.title}\n${new Date().toLocaleString()}\n`;
-        for(let d in deviceState) log += `\n[${d}]\n${deviceState[d].history}`;
-        const b = new Blob([log], {type:'text/plain'}); const u = URL.createObjectURL(b);
-        const a = document.createElement('a'); a.href = u; a.download = `Log_${currentLab.id}.txt`; a.click();
-    }
-    function exitLab() { 
-        document.getElementById('selection-screen').style.display='flex'; 
-        document.getElementById('lab-screen').style.display='none'; 
-        history.pushState({page: "menu"}, "");
-    }
+    function confirmJudge() { if (confirm("採点を実施しますか？")) { switchLeftTab(3); runJudge(); } }
+    function exitLab() { document.getElementById('selection-screen').style.display = 'flex'; document.getElementById('lab-screen').style.display = 'none'; }
+    
     const resizer = document.getElementById('dragMe');
     resizer.onmousedown = (e) => {
-        document.onmousemove = (ev) => { let w = (ev.clientX/window.innerWidth)*100; if(w>15 && w<70) document.getElementById('left-panel').style.width = w+'%'; };
+        document.onmousemove = (ev) => { 
+            if(window.innerWidth > 768) {
+                let w = (ev.clientX/window.innerWidth)*100; 
+                if(w>15 && w<70) document.getElementById('left-panel').style.width = w+'%'; 
+            }
+        };
         document.onmouseup = () => document.onmousemove = null;
     };
 </script>
